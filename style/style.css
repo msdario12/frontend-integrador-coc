@@ -1,0 +1,30 @@
+.hero-img {
+	position: relative;
+	z-index: 6;
+}
+.hero-img::after {
+	content: '';
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: -5;
+}
+
+.footer-list {
+	list-style: none;
+}
+
+.footer-list a {
+	text-decoration: none;
+	color: white;
+}
+.footer-container {
+	background: rgb(28, 54, 67);
+	background: linear-gradient(
+		90deg,
+		rgba(28, 54, 67, 1) 0%,
+		rgba(31, 82, 112, 1) 100%
+	);
+}
