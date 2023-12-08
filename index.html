@@ -135,27 +135,7 @@
 				Cuéntanos de que quieres hablar!
 			</p>
 			<div>
-				<form action="" id="oradorForm" class="mx-2 mx-md-3 mx-lg-5">
-					<div class="d-flex gap-5 mb-3">
-						<input type="text" name="firstName" id="firstName" class="form-control" placeholder="Nombre" />
-
-						<input type="text" name="lastName" id="lastName" class="form-control" placeholder="Apellido" />
-					</div>
-					<div class="mb-3">
-						<input type="text" name="mail" id="mail" class="form-control" placeholder="Email" />
-					</div>
-					<div class="form-floating mb-1">
-						<textarea class="form-control form-control-lg" placeholder="Sobre qué quieres hablar?" name="theme"
-							id="theme" cols="30" rows="4" style="height: 100px"></textarea>
-						<label for="theme"> Sobre qúe quieres hablar? </label>
-					</div>
-					<div class="form-text text-start mb-3">
-						Recuerda incluir un título para tu charlar
-					</div>
-					<button type="submit" class="btn btn-success w-100 fs-5 mb-5">
-						Enviar
-					</button>
-				</form>
+				<div id="oradorFormContainer"></div>
 			</div>
 		</section>
 		<section class="container-lg">
@@ -244,6 +224,7 @@
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
 	<script src="assets/js/htmlComponents.js"></script>
+	<script src="assets/js/validateFunctions.js"></script>
 	<script src="assets/js/script.js"></script>
 	<script src="assets/js/oradorFormScript.js"></script>
 </body>
