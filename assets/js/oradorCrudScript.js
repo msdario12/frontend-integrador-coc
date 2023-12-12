@@ -27,9 +27,9 @@ ${list.map(
 						<td>
 							<div class="text-center">
 								<button class="btn btn-danger" >Borrar</button>
-						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarOrador"onclick="startModal(${el.id})">Editar</button>
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalOrador${el.id}"onclick="startModal(${el.id})">Editar</button>
 
-						<div class="modal fade" id="editarOrador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal fade" id="modalOrador${el.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -69,16 +69,35 @@ const getAllOradores = () => {
     });
 };
 
-const oradorList = getAllOradores();
+const setInputValue = (value, inputName, formHTML) => {
+  let inputElement = formHTML.querySelector(`input[name="${inputName}"]`);
+  if (!inputElement) {
+    inputElement = formHTML.querySelector(`textarea[name="${inputName}"]`);
+    return (inputElement.value = value);
+  }
+  inputElement.setAttribute("value", value);
+  return inputElement;
+};
 
 function startModal(id) {
   const oradorForm = document.getElementById(id);
   oradorForm.innerHTML = oradorFormHTML;
-  const form = oradorForm.children;
-  const data = new FormData(form.item(0));
-  console.log(data);
+  // Get data based in a id
+  fetch(ENDPOINT + `?id=${id}`)
+    .then((res) => res.json())
+    .then((json) => {
+      const { name, lastName, email, theme } = json;
+      setInputValue(name, "firstName", oradorForm);
+      setInputValue(lastName, "lastName", oradorForm);
+      setInputValue(email, "mail", oradorForm);
+      setInputValue(theme, "theme", oradorForm);
+    })
+    .catch((e) => console.log(e));
   oradorForm.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log(e);
+    handleSubmitOradorForm(e, "PUT", "Se edito correctamente el orador.");
   });
 }
+
+const oradorList = getAllOradores();

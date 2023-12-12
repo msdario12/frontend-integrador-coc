@@ -4,11 +4,22 @@ const resultOradorHTML = document.getElementById("resultOradorContainer");
 const INPUTS_NAMES = ["firstName", "lastName", "mail", "theme"];
 const ENDPOINT = "http://localhost:8080/integradorbackend/api/orador";
 
-oradorForm.addEventListener("change", () => resetStatusOfInput(INPUTS_NAMES));
+function sendDataToBackend(method, data, msg) {
+  fetch(ENDPOINT, {
+    method: method,
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json);
+      resultOradorHTML.classList.remove("alert-danger");
+      resultOradorHTML.classList.add("alert-primary");
+      resultOradorHTML.innerHTML = msg;
+      getAllOradores();
+    });
+}
 
-oradorForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  console.log("Submit");
+function handleSubmitOradorForm(e, method, msg) {
   const formData = new FormData(e.target);
   let objectData = {};
   let isInvalid = false;
@@ -28,15 +39,12 @@ oradorForm.addEventListener("submit", (e) => {
   validateInput(INPUTS_NAMES);
   if (isInvalid) return;
   console.log(objectData);
-  fetch(ENDPOINT, {
-    method: "POST",
-    body: JSON.stringify(objectData),
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      console.log(json);
-      resultOradorHTML.classList.remove("alert-danger");
-      resultOradorHTML.classList.add("alert-primary");
-      resultOradorHTML.innerHTML = "Se creo correctamente el orador";
-    });
+  sendDataToBackend(method, objectData, msg);
+}
+
+oradorForm.addEventListener("change", () => resetStatusOfInput(INPUTS_NAMES));
+
+oradorForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  handleSubmitOradorForm(e, "POST", "Se creo correctamente el orador.");
 });
