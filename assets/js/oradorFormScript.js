@@ -4,24 +4,40 @@ const resultOradorHTML = document.getElementById("resultOradorContainer");
 const INPUTS_NAMES = ["firstName", "lastName", "mail", "theme"];
 const ENDPOINT = "http://localhost:8080/integradorbackend/api/orador";
 
-function sendDataToBackend(method, data, msg) {
-  fetch(ENDPOINT, {
-    method: method,
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      console.log(json);
-      resultOradorHTML.classList.remove("alert-danger");
-      resultOradorHTML.classList.add("alert-primary");
-      resultOradorHTML.innerHTML = msg;
-      getAllOradores();
-    });
+function sendDataToBackend(method, data, msg, id, closeFunction) {
+  try {
+    fetch(id ? `${ENDPOINT}?id=${id}` : ENDPOINT, {
+      method: method,
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        resultOradorHTML.classList.remove("alert-danger");
+        resultOradorHTML.classList.add("alert-primary");
+        resultOradorHTML.innerHTML = msg;
+      })
+      .catch((e) => console.log("Error"))
+      .finally(() => {
+        getAllOradores();
+        closeFunction();
+      });
+  } catch (e) {
+    console.log("Error");
+  }
 }
 
-function handleSubmitOradorForm(e, method, msg) {
+function handleSubmitOradorForm(
+  e,
+  method,
+  msg,
+  objectData = {},
+  id = "",
+  closeFunction = () => {
+    return "";
+  }
+) {
   const formData = new FormData(e.target);
-  let objectData = {};
   let isInvalid = false;
   INPUTS_NAMES.forEach((name) => {
     if (!formData.get(name)) {
@@ -38,8 +54,7 @@ function handleSubmitOradorForm(e, method, msg) {
   });
   validateInput(INPUTS_NAMES);
   if (isInvalid) return;
-  console.log(objectData);
-  sendDataToBackend(method, objectData, msg);
+  sendDataToBackend(method, objectData, msg, id, closeFunction);
 }
 
 oradorForm.addEventListener("change", () => resetStatusOfInput(INPUTS_NAMES));

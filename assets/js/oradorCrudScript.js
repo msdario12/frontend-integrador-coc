@@ -27,7 +27,7 @@ ${list.map(
 						<td>
 							<div class="text-center">
 								<button class="btn btn-danger" >Borrar</button>
-						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalOrador${el.id}"onclick="startModal(${el.id})">Editar</button>
+						<button type="button" class="btn btn-primary" onclick="startModal(${el.id})">Editar</button>
 
 						<div class="modal fade" id="modalOrador${el.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog">
@@ -79,14 +79,29 @@ const setInputValue = (value, inputName, formHTML) => {
   return inputElement;
 };
 
+function closeModal(id) {
+  const modalHTML = document.getElementById(`modalOrador${id}`);
+  const myModal = new bootstrap.Modal(modalHTML);
+  myModal.hide();
+}
+
+function openModal(id) {
+  const modalHTML = document.getElementById(`modalOrador${id}`);
+  const myModal = new bootstrap.Modal(modalHTML);
+  myModal.toggle();
+}
+
 function startModal(id) {
+  openModal(id);
   const oradorForm = document.getElementById(id);
   oradorForm.innerHTML = oradorFormHTML;
+  let jsonData = {};
   // Get data based in a id
   fetch(ENDPOINT + `?id=${id}`)
     .then((res) => res.json())
     .then((json) => {
       const { name, lastName, email, theme } = json;
+      jsonData = json;
       setInputValue(name, "firstName", oradorForm);
       setInputValue(lastName, "lastName", oradorForm);
       setInputValue(email, "mail", oradorForm);
@@ -96,7 +111,14 @@ function startModal(id) {
   oradorForm.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log(e);
-    handleSubmitOradorForm(e, "PUT", "Se edito correctamente el orador.");
+    handleSubmitOradorForm(
+      e,
+      "PUT",
+      "Se edito correctamente el orador.",
+      {},
+      id,
+      closeModal
+    );
   });
 }
 
