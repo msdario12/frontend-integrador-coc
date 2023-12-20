@@ -26,7 +26,7 @@ ${list.map(
 						<td>${el.startDate}</td>
 						<td>
 							<div class="text-center">
-								<button class="btn btn-danger" >Borrar</button>
+								<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteOrador${el.id}" >Borrar</button>
 						<button type="button" class="btn btn-primary" onclick="startModal(${el.id})">Editar</button>
 
 						<div class="modal fade" id="modalOrador${el.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -34,20 +34,34 @@ ${list.map(
 							<div class="modal-content">
 								<div class="modal-header">
 									<h1 class="modal-title fs-5" id="exampleModalLabel">Editar orador</h1>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="modalOrador${el.id}" aria-label="Close"></button>
 								</div>
-								<div class="modal-body" id="${el.id}">
-
-
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary">Save changes</button>
+									<div class="modal-body" id="${el.id}">
 									</div>
+								</div>
 								</div>
 							</div>
 						</div>
+
+						<div class="modal fade" id="deleteOrador${el.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h1 class="modal-title fs-5" id="exampleModalLabel">Borrar orador</h1>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="deleteOrador${el.id}" aria-label="Close"></button>
+								</div>
+									<div class="modal-body" id="${el.id}">
+										<h3>Confirme eliminar el orador</h3>
+									</div>
+					<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+									<button type="button" class="btn btn-primary" onClick="deleteOradorById(${el.id})" data-bs-dismiss="modal" data-bs-target="#deleteOrador${el.id}">Borrar Orador</button>
+								</div>
+								</div>
+								</div>
 							</div>
+						</div>
+
 					</td>
 					</tr>`
 )}
@@ -66,7 +80,8 @@ const getAllOradores = () => {
       oradoresList = json;
       printOradoresTable(json);
       return oradoresList;
-    });
+    })
+    .catch(() => console.log("Err"));
 };
 
 const setInputValue = (value, inputName, formHTML) => {
@@ -95,6 +110,9 @@ function startModal(id) {
   openModal(id);
   const oradorForm = document.getElementById(id);
   oradorForm.innerHTML = oradorFormHTML;
+  const submitButton = oradorForm.querySelector("button[type=submit]");
+  submitButton.setAttribute("data-bs-dismiss", "modal");
+  submitButton.setAttribute("data-bs-target", `modalOrador${id}`);
   let jsonData = {};
   // Get data based in a id
   fetch(ENDPOINT + `?id=${id}`)
@@ -120,6 +138,16 @@ function startModal(id) {
       closeModal
     );
   });
+}
+
+function deleteOradorById(id) {
+  fetch(ENDPOINT + `?id=${id}`, { method: "DELETE" })
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json);
+    })
+    .catch(() => console.log("LO"))
+    .finally(() => getAllOradores());
 }
 
 const oradorList = getAllOradores();

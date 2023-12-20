@@ -5,26 +5,22 @@ const INPUTS_NAMES = ["firstName", "lastName", "mail", "theme"];
 const ENDPOINT = "http://localhost:8080/integradorbackend/api/orador";
 
 function sendDataToBackend(method, data, msg, id, closeFunction) {
-  try {
-    fetch(id ? `${ENDPOINT}?id=${id}` : ENDPOINT, {
-      method: method,
-      body: JSON.stringify(data),
+  fetch(id ? `${ENDPOINT}?id=${id}` : ENDPOINT, {
+    method: method,
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json);
+      resultOradorHTML.classList.remove("alert-danger");
+      resultOradorHTML.classList.add("alert-primary");
+      resultOradorHTML.innerHTML = msg;
     })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        resultOradorHTML.classList.remove("alert-danger");
-        resultOradorHTML.classList.add("alert-primary");
-        resultOradorHTML.innerHTML = msg;
-      })
-      .catch((e) => console.log("Error"))
-      .finally(() => {
-        getAllOradores();
-        closeFunction();
-      });
-  } catch (e) {
-    console.log("Error");
-  }
+    .catch((e) => console.log("Error"))
+    .finally(() => {
+      getAllOradores();
+      closeFunction(id);
+    });
 }
 
 function handleSubmitOradorForm(
